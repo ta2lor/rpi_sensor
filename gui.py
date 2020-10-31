@@ -26,7 +26,7 @@ class MyWindow(QMainWindow, form_class):
         self.stufflabel.setFont(QFont('Arial', 15))
         self.initBG()
 
-        self.humipic.setPixmap(QtGui.QPixmap("hu1.png"))
+        self.humipic.setPixmap(QtGui.QPixmap("hu3.png"))
         self.temppic.setPixmap(QtGui.QPixmap("temp.png"))
         self.contpic.setPixmap(QtGui.QPixmap("control.png"))
 
