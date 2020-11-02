@@ -25,4 +25,4 @@ while als:
     with open('temp.csv', "a") as output:
         writer = csv.writer(output, delimiter=',', lineterminator='\n')
         writer.writerow(data)
-    time.sleep(20)
+    time.sleep(60)

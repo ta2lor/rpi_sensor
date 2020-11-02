@@ -38,7 +38,7 @@ class MyWindow(QMainWindow, form_class):
 
 
         self.timevar.start(3000)
-        self.timevar.timeout.connect(self.csv_upload)
+        self.timevar.timeout.connect(self.csv_download)
         self.timevar.timeout.connect(self.get_sensor_data)
 #        self.pushButton.clicked.connect(self.get_sensor_data)
 
@@ -53,7 +53,7 @@ class MyWindow(QMainWindow, form_class):
         self.templabel.setText(str(temp) + " °C")
         print("changed")
             #time.sleep(40)
-    def csv_upload(self):
+    def csv_download(self):
         fname = 'control.csv'
         fh = open(fname)
         #stuff = list()

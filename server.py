@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*- 
+# -*- coding: utf-8 -*-
 import csv
 import socket
 import Adafruit_DHT
@@ -7,6 +7,7 @@ import time
 from datetime import datetime
 import subprocess
 from glob import glob
+from datetime import datetime
 
 sensor = Adafruit_DHT.DHT11
 pin = '4'
@@ -42,7 +43,7 @@ Freq = 100
 RED = GPIO.PWM(red, Freq)
 BLUE = GPIO.PWM(blue, Freq)
 GREEN = GPIO.PWM(green, Freq)
-
+3
 BLUE.start(0)
 RED.start(0)
 GREEN.start(0)
@@ -82,16 +83,15 @@ def send_data(data):
         if humidity < 100:
             data = str(int(temperature)) + "," + str(int(humidity))
             list = [temperature, humidity, timeC]
-    else:
-        data = 0+","+0
-
-    try:
-        if GPIO.input(PIR_PIN) == GPIO.HIGH:
-            data = data + ",1"
         else:
-            data = data + ",0"
-    except KeyboardInterrupt:
-        GPIO.cleanup()
+            data = '0'+","+'0'
+    else:
+        data = '0'+","+'0'
+
+    if GPIO.input(PIR_PIN) == GPIO.HIGH:
+        data = data + ",1"
+    else:
+        data = data + ",0"
 
     return data
 
@@ -111,33 +111,39 @@ def save_csv(data):
 
 
 while True:
-    sensor_data = ""
-    conn, addr = s.accept()
-    print("Connected by ", addr)
+    try:
+        sensor_data = ""
+        conn, addr = s.accept()
+        print("Connected by ", addr)
 
-    data = conn.recv(1024)
-    data = data.decode("utf8").strip()
-    if not data: break
-    print("Received: " + data)
+        data = conn.recv(1024)
+        data = data.decode("utf8").strip()
+        print("Received: " + data)
 
-    aircon = "에어컨"
-    boilor = "보일러"
-    if boilor in data:
-        BLUE.ChangeDutyCycle(0)
-        RED.ChangeDutyCycle(75)
-    elif aircon in data:
-        RED.ChangeDutyCycle(0)
-        BLUE.ChangeDutyCycle(75)
-    else:
-        RED.ChangeDutyCycle(0)
-        BLUE.ChangeDutyCycle(0)
-        GREEN.ChangeDutyCycle(75)
+        aircon = "에어컨"
+        boilor = "보일러" 
+        if boilor in data:
+            GREEN.ChangeDutyCycle(0)
+            BLUE.ChangeDutyCycle(0)
+            RED.ChangeDutyCycle(100)
+        elif aircon in data:
+            GREEN.ChangeDutyCycle(0)
+            RED.ChangeDutyCycle(0)
+            BLUE.ChangeDutyCycle(100)
+        else:
+            RED.ChangeDutyCycle(0)
+            BLUE.ChangeDutyCycle(0)
+            GREEN.ChangeDutyCycle(75)
 
-    save_csv(data)
+        save_csv(data)
 
-    res = send_data(sensor_data)
-    print(res)
-    conn.sendall(res.encode("utf-8"))
-    conn.close()
-    time.sleep(4.5)
+        res = send_data(sensor_data)
+        print(res)
+        conn.sendall(res.encode("utf-8"))
+        conn.close()
+        time.sleep(2)
+
+    except KeyboardInterrupt:
+        GPIO.cleanup()
+        break;
 s.close()
